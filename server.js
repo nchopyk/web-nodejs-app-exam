@@ -11,6 +11,10 @@ app.use(express.json());
 
 app.use('/api', weatherRouter);
 
+app.get('*', function(req, res){
+  res.status(404).send('Page not found...');
+});
+
 const start = async () => {
   try {
     await mongoose.connect(config.DB_URL, {
