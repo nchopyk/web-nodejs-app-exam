@@ -1,16 +1,12 @@
-const { validationResult } = require('express-validator');
 const weatherService = require('../services/weather-service');
 
 
 class weatherController {
   async getCurrentWeather(req, res) {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) res.status(400).json({ message: 'Bad params', ...errors });
+      const { city: cityName } = req.params;
 
-      const { city: cityName, stateCode, countryCode } = req.query;
-
-      const currentWeather = await weatherService.getCurrentWeather({ cityName, stateCode, countryCode });
+      const currentWeather = await weatherService.getCurrentWeather(cityName);
 
       return res.json(currentWeather);
     } catch (e) {
