@@ -5,7 +5,7 @@ class WeatherService {
   async getCurrentWeather({ cityName, stateCode, countryCode }) {
     stateCode = stateCode ? `,${stateCode}` : '';
     countryCode = countryCode ? `,${countryCode}` : '';
-    const requestUrl = `https://${config.WEATHER_API_URL}?q=${cityName}${stateCode}${countryCode}&appid=${config.WEATHER_API_KEY}`;
+    const requestUrl = encodeURI(`https://${config.WEATHER_API_URL}?q=${cityName}${stateCode}${countryCode}&appid=${config.WEATHER_API_KEY}&units=metric`);
 
     const response = await axios({
       method: 'get',
