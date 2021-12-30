@@ -11,16 +11,7 @@ class WeatherService {
 
 
     if (!existingCity) {
-      const newCity = new City({ name: cityName });
-
-      const forecast = await this._getForecastFromApi(cityName);
-      const weather = new Weather({ forecast, city: newCity._id, createdAt: Date.now() });
-      newCity.weatherForecasts.push(weather._id);
-
-      await newCity.save();
-      await weather.save();
-
-      return forecast;
+      return this._createCityWithWeather(cityName);
     }
 
     const forecasts = await Weather.find({ city: existingCity._id }).sort({ createdAt: -1 });
@@ -28,9 +19,26 @@ class WeatherService {
 
     if (this._diffHours(latestForecast.createdAt, new Date()) <= 2) {
       return latestForecast.forecast;
+    } else {
+      return this._updateCityWeather(existingCity);
     }
+  }
+
+  async _createCityWithWeather(cityName) {
+    const newCity = new City({ name: cityName });
 
     const forecast = await this._getForecastFromApi(cityName);
+    const weather = new Weather({ forecast, city: newCity._id, createdAt: Date.now() });
+    newCity.weatherForecasts.push(weather._id);
+
+    await newCity.save();
+    await weather.save();
+
+    return forecast;
+  }
+
+  async _updateCityWeather(existingCity) {
+    const forecast = await this._getForecastFromApi(existingCity.name);
     const weather = new Weather({ forecast, city: existingCity._id, createdAt: Date.now() });
     existingCity.weatherForecasts.push(weather._id);
 
