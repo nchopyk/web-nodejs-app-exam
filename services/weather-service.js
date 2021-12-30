@@ -24,6 +24,10 @@ class WeatherService {
     }
   }
 
+  async getStatistics({ city, period }) {
+    return { statistics: 'OK' };
+  }
+
   async _createCityWithWeather(cityName) {
     const newCity = new City({ name: cityName });
 
